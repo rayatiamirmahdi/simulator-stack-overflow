@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <p> Index Page </p>
+
+    <div class="card">
+        {% for post in posts %}
+
+            <a class="card-body" href="{{ post.get_absolute_url }}"> {{ post }} </a>
+        {% endfor %}
+    </div>
+
+{% endblock %}

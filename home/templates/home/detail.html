@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+    <div>
+    {% if post.user.id == request.user.id %}
+        <a class="btn btn-danger" href="{% url "home:delete_url" post.id %}"> Delete</a>
+        <a class="btn btn-primary" href="{% url "home:update_url" post.id %}"> Update</a>
+    {% endif %}
+        <p> <a href="{% url "account:profile_url" post.user.id %}"> {{ post.user }}</a></p>
+        <p> {{ post.body }}</p> <hr>
+
+    {% if user.is_authenticated %}
+        <form action="" method="post">
+            {% csrf_token %}
+             {{ form.as_p }}
+            <input type="submit" value="Send">
+
+        </form>
+    {% else %}
+        <p class="alert alert-danger"> you should login... </p>
+
+    {% endif %}
+
+
+
+     {% for comment in comments %}
+         <br>
+        <div class="card bg-dark text-white">
+         <p class="card-header "> {{ comment.user }} /// {{ comment.create|timesince }}</p>
+         <p class="card-body"> {{ comment.body }}</p>
+            {% if user.is_authenticated %}
+                <form action="{% url "home:reply_url" post.id comment.id %}" method="post" >
+                {% csrf_token %}
+                        
+                        <p> {{ reply.as_p }}</p>
+                        <input type="submit" value="Send" >
+                </form>
+            {% endif %}
+            {% with  replies=comment.reply_co.all  %}
+            {% for reply in replies %}
+                <hr>
+                <div class="bg-secondary p-1 m-1" >
+                    <p class="text-dark" > {{ reply.user }} /// {{ reply.create|timesince }}</p>
+                    <p> {{ reply.body }}</p>
+                </div>
+
+
+            {% endfor %}
+            {% endwith %}
+
+
+        </div>
+     {% endfor %}
+
+
+
+    </div>
+
+{% endblock %}
